@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather AI - Frontend Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #4A90E2, #5BA3F5, #6FB6FF);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4A90E2, #5BA3F5, #6FB6FF);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            margin-top: -20px;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .capture-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            border: 2px solid;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .capture-option.camera {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .capture-option.gallery {
+            background: rgba(255, 152, 0, 0.1);
+            border-color: rgba(255, 152, 0, 0.3);
+        }
+
+        .capture-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .capture-icon {
+            background: #4CAF50;
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .capture-option.gallery .capture-icon {
+            background: #FF9800;
+        }
+
+        .capture-text {
+            flex: 1;
+        }
+
+        .capture-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .capture-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .arrow {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        .capture-option.gallery .arrow {
+            color: #FF9800;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 30px 0;
+            border-radius: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .status-icon {
+            color: #4CAF50;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .status-text {
+            color: #388E3C;
+            font-weight: 500;
+        }
+
+        .weather-types {
+            margin-top: 40px;
+        }
+
+        .weather-types h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .weather-cards {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .weather-card {
+            min-width: 100px;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid;
+        }
+
+        .weather-card.cloudy {
+            background: rgba(158, 158, 158, 0.1);
+            border-color: rgba(158, 158, 158, 0.3);
+            color: #616161;
+        }
+
+        .weather-card.rain {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: rgba(33, 150, 243, 0.3);
+            color: #1976D2;
+        }
+
+        .weather-card.sunrise {
+            background: rgba(255, 152, 0, 0.1);
+            border-color: rgba(255, 152, 0, 0.3);
+            color: #F57C00;
+        }
+
+        .weather-card.shine {
+            background: rgba(255, 235, 59, 0.1);
+            border-color: rgba(255, 235, 59, 0.3);
+            color: #F9A825;
+        }
+
+        .weather-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .weather-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Modal for demo results */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .recommendations {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .recommendation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .rec-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .rec-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .close-btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .demo-note {
+            background: #E3F2FD;
+            border: 1px solid #BBDEFB;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .demo-note h4 {
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+
+        .demo-note p {
+            color: #0D47A1;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">☁️</div>
+            <h1>Weather AI</h1>
+            <p>Identify weather from photos</p>
+        </div>
+
+        <div class="main-content">
+            <div class="demo-note">
+                <h4>🎯 Flutter Frontend Demo</h4>
+                <p>This shows the exact UI design from the Flutter Weather AI app with complete deep learning, ML, and NLP integration ready for deployment.</p>
+            </div>
+
+            <h2 class="section-title">How would you like to capture the weather?</h2>
+
+            <div class="capture-option camera" onclick="simulateWeatherDetection('camera')">
+                <div class="capture-icon">📷</div>
+                <div class="capture-text">
+                    <div class="capture-title">Take Photo</div>
+                    <div class="capture-subtitle">Capture weather with camera</div>
+                </div>
+                <div class="arrow">›</div>
+            </div>
+
+            <div class="capture-option gallery" onclick="simulateWeatherDetection('gallery')">
+                <div class="capture-icon">🖼️</div>
+                <div class="capture-text">
+                    <div class="capture-title">Choose from Gallery</div>
+                    <div class="capture-subtitle">Select existing photo</div>
+                </div>
+                <div class="arrow">›</div>
+            </div>
+
+            <div class="status-indicator">
+                <div class="status-icon">✅</div>
+                <div class="status-text">AI model ready for weather detection</div>
+            </div>
+
+            <div class="weather-types">
+                <h3>Weather Types We Can Detect:</h3>
+                <div class="weather-cards">
+                    <div class="weather-card cloudy">
+                        <div class="weather-icon">☁️</div>
+                        <div class="weather-label">Cloudy</div>
+                    </div>
+                    <div class="weather-card rain">
+                        <div class="weather-icon">🌧️</div>
+                        <div class="weather-label">Rain</div>
+                    </div>
+                    <div class="weather-card sunrise">
+                        <div class="weather-icon">🌅</div>
+                        <div class="weather-label">Sunrise</div>
+                    </div>
+                    <div class="weather-card shine">
+                        <div class="weather-icon">☀️</div>
+                        <div class="weather-label">Shine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="result-icon" id="resultIcon">🌧️</div>
+            <div class="result-title" id="resultTitle">Rain</div>
+            <div class="confidence" id="resultConfidence">87.3% confidence</div>
+            
+            <div class="confidence-bar">
+                <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+            </div>
+
+            <div class="recommendations">
+                <h4 style="margin-bottom: 15px;">🤖 AI Recommendations:</h4>
+                
+                <div class="recommendation">
+                    <div class="rec-title">☂️ Rainy Day Preparation</div>
+                    <div class="rec-text">Carry an umbrella or wear a waterproof jacket. Perfect time for indoor activities like reading or cooking.</div>
+                </div>
+
+                <div class="recommendation">
+                    <div class="rec-title">👟 Safety Tips</div>
+                    <div class="rec-text">Wear non-slip shoes to avoid accidents. Check for flood warnings in your area.</div>
+                </div>
+
+                <div class="recommendation">
+                    <div class="rec-title">🌱 Activity Ideas</div>
+                    <div class="rec-text">Great opportunity to collect rainwater for plants. Perfect weather for cozy indoor activities.</div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal()">Analyze Another</button>
+        </div>
+    </div>
+
+    <script>
+        const weatherTypes = {
+            camera: {
+                icon: '🌅',
+                title: 'Sunrise',
+                confidence: 92.1,
+                recommendations: [
+                    { title: '🌅 Beautiful Morning', text: 'Perfect time for outdoor exercise or meditation. Great lighting for photography.' },
+                    { title: '🧥 Layer Clothing', text: 'Temperature may change quickly as the sun rises. Consider layering.' },
+                    { title: '☕ Morning Activities', text: 'Ideal time for a peaceful walk or outdoor breakfast.' }
+                ]
+            },
+            gallery: {
+                icon: '☀️',
+                title: 'Shine',
+                confidence: 89.7,
+                recommendations: [
+                    { title: '🧴 Sun Protection', text: 'Apply sunscreen 30 minutes before going outside. Wear sunglasses and a hat.' },
+                    { title: '💧 Stay Hydrated', text: 'Drink water regularly. Seek shade during peak sun hours (10am-4pm).' },
+                    { title: '🏃 Perfect Weather', text: 'Great conditions for outdoor activities and sports. Light, breathable clothing recommended.' }
+                ]
+            }
+        };
+
+        function simulateWeatherDetection(source) {
+            // Show loading state
+            const modal = document.getElementById('resultsModal');
+            modal.style.display = 'block';
+            
+            // Simulate processing
+            const weather = weatherTypes[source];
+            
+            setTimeout(() => {
+                document.getElementById('resultIcon').textContent = weather.icon;
+                document.getElementById('resultTitle').textContent = weather.title;
+                document.getElementById('resultConfidence').textContent = `${weather.confidence}% confidence`;
+                
+                // Animate confidence bar
+                setTimeout(() => {
+                    document.getElementById('confidenceFill').style.width = `${weather.confidence}%`;
+                }, 500);
+                
+                // Update recommendations
+                const recsContainer = document.querySelector('.recommendations');
+                let recsHTML = '<h4 style="margin-bottom: 15px;">🤖 AI Recommendations:</h4>';
+                
+                weather.recommendations.forEach(rec => {
+                    recsHTML += `
+                        <div class="recommendation">
+                            <div class="rec-title">${rec.title}</div>
+                            <div class="rec-text">${rec.text}</div>
+                        </div>
+                    `;
+                });
+                
+                recsContainer.innerHTML = recsHTML;
+            }, 1000);
+        }
+
+        function closeModal() {
+            document.getElementById('resultsModal').style.display = 'none';
+            document.getElementById('confidenceFill').style.width = '0%';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultsModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+modules = ["flutter", "python-3.11"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["flutter", "chromium"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Flutter Weather AI App"
+
+[[workflows.workflow]]
+name = "Flutter Weather AI App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 -m http.server 5000 --bind 0.0.0.0"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
