@@ -2,7 +2,7 @@ modules = ["flutter", "python-3.11"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["flutter", "chromium"]
+packages = ["cairo", "chromium", "ffmpeg-full", "flutter", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pkg-config", "qhull", "tcl", "tk", "zlib"]
 
 [workflows]
 runButton = "Project"
