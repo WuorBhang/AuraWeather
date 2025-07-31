@@ -35,7 +35,7 @@ class MLService extends ChangeNotifier {
       if (bytes.isNotEmpty) {
         // In a real implementation, this would load the TFLite model
         // For now, we'll simulate successful loading
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         _isModelLoaded = true;
         print('Weather classification model loaded successfully');
         print('Model size: ${(bytes.length / (1024 * 1024)).toStringAsFixed(2)} MB');
@@ -129,7 +129,7 @@ class MLService extends ChangeNotifier {
   Future<WeatherPrediction?> _runInference(List<List<List<double>>> input) async {
     try {
       // Simulate inference time
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       
       // In a real implementation, this would use TensorFlow Lite
       // For demo, we'll analyze image characteristics to provide realistic predictions
@@ -243,6 +243,7 @@ class MLService extends ChangeNotifier {
     }
   }
 
+  @override
   void dispose() {
     super.dispose();
   }

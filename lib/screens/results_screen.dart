@@ -9,7 +9,7 @@ import '../widgets/recommendation_card.dart';
 class ResultsScreen extends StatefulWidget {
   final WeatherPrediction prediction;
 
-  const ResultsScreen({Key? key, required this.prediction}) : super(key: key);
+  const ResultsScreen({super.key, required this.prediction});
 
   @override
   _ResultsScreenState createState() => _ResultsScreenState();
@@ -59,7 +59,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -76,14 +76,14 @@ class _ResultsScreenState extends State<ResultsScreen> {
             children: [
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white,
                   size: 28,
                 ),
               ),
-              Spacer(),
-              Text(
+              const Spacer(),
+              const Text(
                 'Weather Analysis',
                 style: TextStyle(
                   fontSize: 20,
@@ -91,10 +91,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   color: Colors.white,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               IconButton(
                 onPressed: _shareResults,
-                icon: Icon(
+                icon: const Icon(
                   Icons.share,
                   color: Colors.white,
                   size: 24,
@@ -102,16 +102,16 @@ class _ResultsScreenState extends State<ResultsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Icon(
             widget.prediction.weatherIcon,
             size: 60,
             color: Colors.white,
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Text(
             widget.prediction.weatherType,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -131,7 +131,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Widget _buildContent() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
@@ -149,11 +149,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Widget _buildImageSection() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             'Analyzed Image',
             style: TextStyle(
@@ -162,7 +162,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               color: Colors.grey.shade800,
             ),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Center(
             child: Container(
               width: double.infinity,
@@ -194,7 +194,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                               size: 50,
                               color: Colors.grey.shade400,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Text(
                               'Image not available',
                               style: TextStyle(
@@ -210,7 +210,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               ),
             ),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           _buildConfidenceBar(),
         ],
       ),
@@ -242,7 +242,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Container(
           height: 8,
           decoration: BoxDecoration(
@@ -266,7 +266,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Widget _buildRecommendationsSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -278,7 +278,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               color: Colors.grey.shade800,
             ),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Expanded(
             child: Consumer<AIService>(
               builder: (context, aiService, child) {
@@ -315,7 +315,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
           CircularProgressIndicator(
             color: widget.prediction.weatherColor,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             'Getting AI recommendations...',
             style: TextStyle(
@@ -338,7 +338,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             size: 60,
             color: Colors.grey.shade400,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             error != null ? 'Failed to load recommendations' : 'No recommendations available',
             style: TextStyle(
@@ -348,7 +348,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             ),
           ),
           if (error != null) ...[
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               error,
               style: TextStyle(
@@ -358,7 +358,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               textAlign: TextAlign.center,
             ),
           ],
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               setState(() {
@@ -369,7 +369,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.prediction.weatherColor,
             ),
-            child: Text('Retry', style: TextStyle(color: Colors.white)),
+            child: const Text('Retry', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -378,7 +378,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Widget _buildBottomActions() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         border: Border(top: BorderSide(color: Colors.grey.shade200)),
@@ -392,12 +392,12 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 backgroundColor: Colors.white,
                 foregroundColor: widget.prediction.weatherColor,
                 side: BorderSide(color: widget.prediction.weatherColor),
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Analyze Another',
                 style: TextStyle(
                   fontSize: 16,
@@ -406,19 +406,19 @@ class _ResultsScreenState extends State<ResultsScreen> {
               ),
             ),
           ),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           Expanded(
             child: ElevatedButton(
               onPressed: _saveResults,
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.prediction.weatherColor,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Save Results',
                 style: TextStyle(
                   fontSize: 16,
@@ -447,7 +447,7 @@ Analyzed with Weather AI app
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Sharing functionality would be implemented here'),
+        content: const Text('Sharing functionality would be implemented here'),
         backgroundColor: widget.prediction.weatherColor,
       ),
     );
@@ -460,7 +460,7 @@ Analyzed with Weather AI app
   void _saveResults() {
     // Implement save functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Results saved successfully!'),
         backgroundColor: Colors.green,
         duration: Duration(seconds: 2),

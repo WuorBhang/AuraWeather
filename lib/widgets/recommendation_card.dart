@@ -6,10 +6,10 @@ class RecommendationCard extends StatefulWidget {
   final Color weatherColor;
 
   const RecommendationCard({
-    Key? key,
+    super.key,
     required this.recommendation,
     required this.weatherColor,
-  }) : super(key: key);
+  });
 
   @override
   _RecommendationCardState createState() => _RecommendationCardState();
@@ -25,7 +25,7 @@ class _RecommendationCardState extends State<RecommendationCard>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(
@@ -43,7 +43,7 @@ class _RecommendationCardState extends State<RecommendationCard>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 15),
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -75,22 +75,22 @@ class _RecommendationCardState extends State<RecommendationCard>
     return InkWell(
       onTap: _toggleExpanded,
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(15),
-        bottom: _isExpanded ? Radius.zero : Radius.circular(15),
+        top: const Radius.circular(15),
+        bottom: _isExpanded ? Radius.zero : const Radius.circular(15),
       ),
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: widget.weatherColor.withOpacity(0.05),
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(15),
-            bottom: _isExpanded ? Radius.zero : Radius.circular(15),
+            top: const Radius.circular(15),
+            bottom: _isExpanded ? Radius.zero : const Radius.circular(15),
           ),
         ),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: widget.weatherColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -101,7 +101,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                 size: 20,
               ),
             ),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +114,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                       color: Colors.grey.shade800,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     widget.recommendation.description,
                     style: TextStyle(
@@ -127,7 +127,7 @@ class _RecommendationCardState extends State<RecommendationCard>
             ),
             AnimatedRotation(
               turns: _isExpanded ? 0.5 : 0,
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               child: Icon(
                 Icons.expand_more,
                 color: widget.weatherColor,
@@ -142,7 +142,7 @@ class _RecommendationCardState extends State<RecommendationCard>
   Widget _buildExpandedContent() {
     if (widget.recommendation.tips.isEmpty) {
       return Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Text(
           'No specific tips available for this recommendation.',
           style: TextStyle(
@@ -155,12 +155,12 @@ class _RecommendationCardState extends State<RecommendationCard>
     }
 
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Divider(color: Colors.grey.shade200),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             'Tips & Recommendations:',
             style: TextStyle(
@@ -169,8 +169,8 @@ class _RecommendationCardState extends State<RecommendationCard>
               color: Colors.grey.shade700,
             ),
           ),
-          SizedBox(height: 10),
-          ...widget.recommendation.tips.map((tip) => _buildTipItem(tip)).toList(),
+          const SizedBox(height: 10),
+          ...widget.recommendation.tips.map((tip) => _buildTipItem(tip)),
         ],
       ),
     );
@@ -178,12 +178,12 @@ class _RecommendationCardState extends State<RecommendationCard>
 
   Widget _buildTipItem(String tip) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 6),
+            margin: const EdgeInsets.only(top: 6),
             width: 6,
             height: 6,
             decoration: BoxDecoration(
@@ -191,7 +191,7 @@ class _RecommendationCardState extends State<RecommendationCard>
               borderRadius: BorderRadius.circular(3),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               tip,

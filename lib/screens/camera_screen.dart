@@ -8,7 +8,7 @@ import '../services/ml_service.dart';
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  const CameraScreen({Key? key, required this.cameras}) : super(key: key);
+  const CameraScreen({super.key, required this.cameras});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -79,24 +79,24 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 80,
             color: Colors.red,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             _error!,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Go Back'),
+            child: const Text('Go Back'),
           ),
         ],
       ),
@@ -104,7 +104,7 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Widget _buildLoadingWidget() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -136,7 +136,7 @@ class _CameraScreenState extends State<CameraScreen> {
           left: 0,
           right: 0,
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -151,14 +151,14 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back,
                     color: Colors.white,
                     size: 28,
                   ),
                 ),
-                Spacer(),
-                Text(
+                const Spacer(),
+                const Text(
                   'Weather Camera',
                   style: TextStyle(
                     color: Colors.white,
@@ -166,8 +166,8 @@ class _CameraScreenState extends State<CameraScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Spacer(),
-                SizedBox(width: 48), // Balance the back button
+                const Spacer(),
+                const SizedBox(width: 48), // Balance the back button
               ],
             ),
           ),
@@ -219,10 +219,10 @@ class _CameraScreenState extends State<CameraScreen> {
                   height: 30,
                   decoration: BoxDecoration(
                     border: Border(
-                      top: isTop ? BorderSide(color: Colors.white, width: 3) : BorderSide.none,
-                      bottom: !isTop ? BorderSide(color: Colors.white, width: 3) : BorderSide.none,
-                      left: isLeft ? BorderSide(color: Colors.white, width: 3) : BorderSide.none,
-                      right: !isLeft ? BorderSide(color: Colors.white, width: 3) : BorderSide.none,
+                      top: isTop ? const BorderSide(color: Colors.white, width: 3) : BorderSide.none,
+                      bottom: !isTop ? const BorderSide(color: Colors.white, width: 3) : BorderSide.none,
+                      left: isLeft ? const BorderSide(color: Colors.white, width: 3) : BorderSide.none,
+                      right: !isLeft ? const BorderSide(color: Colors.white, width: 3) : BorderSide.none,
                     ),
                   ),
                 ),
@@ -236,7 +236,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Widget _buildBottomControls() {
     return Container(
-      padding: EdgeInsets.all(30),
+      padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
@@ -250,7 +250,7 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             'Point camera at the sky or surroundings\nto detect weather conditions',
             style: TextStyle(
               color: Colors.white,
@@ -258,7 +258,7 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -273,7 +273,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(color: Colors.white.withOpacity(0.5)),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.photo_library,
                     color: Colors.white,
                     size: 24,
@@ -293,7 +293,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     border: Border.all(color: Colors.white, width: 4),
                   ),
                   child: Container(
-                    margin: EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: _isProcessing ? Colors.grey : Colors.blue,
                       borderRadius: BorderRadius.circular(32),
@@ -340,20 +340,20 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(30),
+            padding: const EdgeInsets.all(30),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 20),
-                Text(
+                const CircularProgressIndicator(),
+                const SizedBox(height: 20),
+                const Text(
                   'Analyzing weather...',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   'This may take a few seconds',
                   style: TextStyle(
@@ -454,7 +454,7 @@ class _CameraScreenState extends State<CameraScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

@@ -20,6 +20,8 @@ Future<void> main() async {
 }
 
 class WeatherAIApp extends StatelessWidget {
+  const WeatherAIApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

@@ -6,11 +6,11 @@ class WeatherCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const WeatherCard({
-    Key? key,
+    super.key,
     required this.weatherType,
     this.isCompact = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class WeatherCard extends StatelessWidget {
   Widget _buildCompactCard(Color color, IconData icon) {
     return Container(
       width: 100,
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -41,7 +41,7 @@ class WeatherCard extends StatelessWidget {
             color: color,
             size: 28,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             weatherType,
             style: TextStyle(
@@ -66,7 +66,7 @@ class WeatherCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -86,7 +86,7 @@ class WeatherCard extends StatelessWidget {
                 color: color,
                 size: 48,
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Text(
                 weatherType,
                 style: TextStyle(
@@ -95,7 +95,7 @@ class WeatherCard extends StatelessWidget {
                   color: color,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 _getWeatherDescription(weatherType),
                 style: TextStyle(

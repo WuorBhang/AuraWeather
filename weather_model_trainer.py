@@ -4,22 +4,45 @@ Trains a deep learning model on real weather images for classification.
 Based on the provided training code structure with EfficientNetB0.
 """
 
+import os
+import warnings
+# Suppress TensorFlow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+warnings.filterwarnings('ignore')
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
-from keras.applications import EfficientNetB0
 import matplotlib.pyplot as plt
-import os
 from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 from pathlib import Path
 
+# Set matplotlib backend to avoid display issues
+plt.switch_backend('Agg')
+
+# Configure TensorFlow to use CPU only if GPU issues persist
+try:
+    # Try to import EfficientNetB0
+    from keras.applications import EfficientNetB0
+    EFFICIENTNET_AVAILABLE = True
+except ImportError:
+    print("⚠️  EfficientNetB0 not available, will use fallback architecture")
+    EFFICIENTNET_AVAILABLE = False
+
+# Force CPU usage if GPU causes issues
+try:
+    tf.config.set_visible_devices([], 'GPU')
+    print("🔧 Configured TensorFlow to use CPU only")
+except:
+    pass
+
 # Configuration
 IMG_SIZE = 224
 BATCH_SIZE = 32
-EPOCHS_INITIAL = 25
-EPOCHS_FINE_TUNE = 10
+EPOCHS_INITIAL = 10  # Reduced for faster testing
+EPOCHS_FINE_TUNE = 5   # Reduced for faster testing
 NUM_CLASSES = 4
 WEATHER_CLASSES = ['Cloudy', 'Rain', 'Sunrise', 'Shine']
 
@@ -186,42 +209,105 @@ def visualize_data_samples(train_generator):
     plt.close()
 
 def build_weather_model():
-    """Build the weather classification model using EfficientNetB0"""
+    """Build the weather classification model using EfficientNetB0 or fallback"""
     print("\n🏗️  Building model architecture...")
     
-    # Input layer
-    inputs = layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3))
-    
-    # Base model - EfficientNetB0 pre-trained on ImageNet
-    base_model = EfficientNetB0(
-        include_top=False,
-        input_tensor=inputs,
-        weights="imagenet"
-    )
-    
-    # Freeze the base model initially
-    base_model.trainable = False
-    
-    # Add custom classification head
-    x = base_model.output
-    x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dropout(0.2, name="top_dropout")(x)
-    outputs = layers.Dense(NUM_CLASSES, activation="softmax", name="predictions")(x)
-    
-    # Create the model
-    model = keras.Model(inputs, outputs, name="WeatherClassifier")
+    try:
+        # Input layer
+        inputs = layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3))
+        
+        # Try to load EfficientNetB0 if available
+        if EFFICIENTNET_AVAILABLE:
+            try:
+                # Base model - EfficientNetB0 pre-trained on ImageNet
+                base_model = EfficientNetB0(
+                    include_top=False,
+                    input_shape=(IMG_SIZE, IMG_SIZE, 3),
+                    weights="imagenet"
+                )
+                print("✅ EfficientNetB0 loaded successfully")
+                
+                # Freeze the base model initially
+                base_model.trainable = False
+                
+                # Add custom classification head
+                x = base_model.output
+                x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
+                x = layers.BatchNormalization()(x)
+                x = layers.Dropout(0.3, name="top_dropout")(x)
+                x = layers.Dense(256, activation="relu", name="dense_1")(x)
+                x = layers.BatchNormalization()(x)
+                x = layers.Dropout(0.2, name="dropout_2")(x)
+                outputs = layers.Dense(NUM_CLASSES, activation="softmax", name="predictions")(x)
+                
+                # Create the model
+                model = keras.Model(base_model.input, outputs, name="WeatherClassifier")
+                
+            except Exception as e:
+                print(f"⚠️  EfficientNetB0 loading failed: {e}")
+                raise e
+        else:
+            raise Exception("EfficientNetB0 not available")
+            
+    except Exception as e:
+        print(f"🔄 Using fallback CNN architecture: {e}")
+        
+        # Fallback - Custom CNN architecture
+        model = keras.Sequential([
+            layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3)),
+            
+            # First block
+            layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+            layers.BatchNormalization(),
+            layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+            layers.MaxPooling2D(2, 2),
+            layers.Dropout(0.25),
+            
+            # Second block
+            layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+            layers.BatchNormalization(),
+            layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+            layers.MaxPooling2D(2, 2),
+            layers.Dropout(0.25),
+            
+            # Third block
+            layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+            layers.BatchNormalization(),
+            layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+            layers.MaxPooling2D(2, 2),
+            layers.Dropout(0.25),
+            
+            # Fourth block
+            layers.Conv2D(256, (3, 3), activation='relu', padding='same'),
+            layers.BatchNormalization(),
+            layers.Conv2D(256, (3, 3), activation='relu', padding='same'),
+            layers.MaxPooling2D(2, 2),
+            layers.Dropout(0.25),
+            
+            # Classification head
+            layers.GlobalAveragePooling2D(),
+            layers.BatchNormalization(),
+            layers.Dropout(0.5),
+            layers.Dense(512, activation='relu'),
+            layers.BatchNormalization(),
+            layers.Dropout(0.3),
+            layers.Dense(256, activation='relu'),
+            layers.Dropout(0.2),
+            layers.Dense(NUM_CLASSES, activation='softmax')
+        ], name="CustomCNN")
+        
+        print("✅ Custom CNN model created successfully")
     
     # Compile the model
     model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=1e-2),
+        optimizer=keras.optimizers.Adam(learning_rate=1e-3),
         loss="categorical_crossentropy",
         metrics=["accuracy"]
     )
     
     print("✅ Model architecture built successfully")
     print(f"✅ Total parameters: {model.count_params():,}")
-    print(f"✅ Trainable parameters: {sum([np.prod(v.get_shape()) for v in model.trainable_weights]):,}")
+    print(f"✅ Trainable parameters: {sum([np.prod(v.shape) for v in model.trainable_weights]):,}")
     
     return model
 
@@ -267,33 +353,85 @@ def fine_tune_model(model, train_generator, validation_generator):
     """Phase 2: Fine-tune with unfrozen layers"""
     print(f"\n🎯 Phase 2: Fine-tuning model ({EPOCHS_FINE_TUNE} epochs)")
     
-    # Unfreeze the top layers of the base model
-    base_model = model.layers[1]  # EfficientNetB0 layer
-    base_model.trainable = True
-    
-    # Fine-tune from this layer onwards
-    fine_tune_at = len(base_model.layers) - 20
-    
-    # Freeze all the layers before fine_tune_at
-    for layer in base_model.layers[:fine_tune_at]:
-        layer.trainable = False
-    
-    # Recompile with lower learning rate
-    model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=1e-5),
-        loss="categorical_crossentropy",
-        metrics=["accuracy"]
-    )
-    
-    print(f"✅ Unfrozen layers: {sum([1 for layer in model.layers if layer.trainable])}")
-    print(f"✅ Trainable parameters: {sum([np.prod(v.get_shape()) for v in model.trainable_weights]):,}")
+    try:
+        # For Sequential models (our custom CNN), unfreeze the last few layers
+        if hasattr(model, 'layers') and len(model.layers) > 0:
+            # Check if this is a Sequential model
+            if isinstance(model, keras.Sequential):
+                print("🔧 Fine-tuning Sequential model")
+                # Unfreeze the last few layers for fine-tuning
+                total_layers = len(model.layers)
+                layers_to_unfreeze = min(5, total_layers // 2)  # Unfreeze last 5 layers or half
+                
+                # First freeze all layers
+                for layer in model.layers:
+                    layer.trainable = False
+                
+                # Then unfreeze the last few layers
+                for layer in model.layers[-layers_to_unfreeze:]:
+                    layer.trainable = True
+                
+                print(f"✅ Unfroze last {layers_to_unfreeze} layers out of {total_layers}")
+                
+            else:
+                # Functional model case (EfficientNet)
+                print("🔧 Fine-tuning Functional model")
+                # Find the base model layer
+                base_model = None
+                for layer in model.layers:
+                    if hasattr(layer, 'layers') and len(layer.layers) > 10:
+                        base_model = layer
+                        break
+                
+                if base_model:
+                    base_model.trainable = True
+                    # Fine-tune from the last 20 layers
+                    fine_tune_at = max(0, len(base_model.layers) - 20)
+                    for layer in base_model.layers[:fine_tune_at]:
+                        layer.trainable = False
+                    print(f"✅ Fine-tuning from layer {fine_tune_at}")
+                else:
+                    # Fallback: unfreeze all
+                    model.trainable = True
+                    print("✅ Unfreezing all layers")
+        else:
+            # Fallback: unfreeze all layers
+            model.trainable = True
+            print("✅ Unfreezing all layers for fine-tuning")
+        
+        # Recompile with lower learning rate
+        model.compile(
+            optimizer=keras.optimizers.Adam(learning_rate=1e-5),
+            loss="categorical_crossentropy",
+            metrics=["accuracy"]
+        )
+        
+        print(f"✅ Trainable parameters: {sum([np.prod(v.shape) for v in model.trainable_weights]):,}")
+        
+    except Exception as e:
+        print(f"⚠️  Fine-tuning setup failed: {e}")
+        print("🔄 Continuing with lower learning rate only...")
+        
+        # Just lower the learning rate
+        model.compile(
+            optimizer=keras.optimizers.Adam(learning_rate=1e-5),
+            loss="categorical_crossentropy",
+            metrics=["accuracy"]
+        )
     
     # Callbacks for fine-tuning
     callbacks = [
         keras.callbacks.EarlyStopping(
             monitor='val_accuracy',
-            patience=3,
+            patience=5,
             restore_best_weights=True,
+            verbose=1
+        ),
+        keras.callbacks.ReduceLROnPlateau(
+            monitor='val_loss',
+            factor=0.5,
+            patience=3,
+            min_lr=1e-7,
             verbose=1
         ),
         keras.callbacks.ModelCheckpoint(

@@ -10,7 +10,7 @@ import '../widgets/weather_card.dart';
 class HomeScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  const HomeScreen({Key? key, required this.cameras}) : super(key: key);
+  const HomeScreen({super.key, required this.cameras});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
+      padding: const EdgeInsets.all(20),
+      child: const Column(
         children: [
           Icon(
             Icons.wb_cloudy,
@@ -91,16 +91,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMainContent() {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'How would you like to capture the weather?',
               style: TextStyle(
@@ -109,11 +109,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey.shade800,
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildCaptureOptions(),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             _buildMLStatus(),
-            Spacer(),
+            const Spacer(),
             _buildSampleWeatherCards(),
           ],
         ),
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: _openCamera,
           color: Colors.green,
         ),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         _buildCaptureButton(
           icon: Icons.photo_library,
           title: 'Choose from Gallery',
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onTap,
     required Color color,
   }) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Material(
         color: Colors.transparent,
@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: onTap,
           borderRadius: BorderRadius.circular(15),
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(15),
@@ -167,14 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: Colors.white, size: 24),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<MLService>(
       builder: (context, mlService, child) {
         return Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: mlService.isModelLoaded 
                 ? Colors.green.shade50 
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mlService.isModelLoaded ? Icons.check_circle : Icons.hourglass_empty,
                 color: mlService.isModelLoaded ? Colors.green : Colors.orange,
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   mlService.isLoading 
@@ -267,15 +267,15 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.grey.shade700,
           ),
         ),
-        SizedBox(height: 15),
-        Container(
+        const SizedBox(height: 15),
+        SizedBox(
           height: 80,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: weatherTypes.length,
             itemBuilder: (context, index) {
               return Container(
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 child: WeatherCard(
                   weatherType: weatherTypes[index],
                   isCompact: true,
@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Center(
+      builder: (context) => const Center(
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(20),
@@ -367,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
